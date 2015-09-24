@@ -54,6 +54,9 @@
     <label>Area Min Size (Size = Width = Height): <input type="text" ng-model="selMinSize" /></label>
   </div>
   <div>
+    <label>Area Initial Size (Size = Width = Height): <input type="text" ng-model="selInitialSize" /></label>
+  </div>
+  <div>
     <label>Result Image Size (Size = Width = Height): <input type="text" ng-model="resImgSize" /></label>
   </div>
   <div>
@@ -85,6 +88,7 @@
               change-on-fly="changeOnFly"
               area-type="{{type}}"
               area-min-size="selMinSize"
+              area-initial-size="selInitialSize"
               result-image-format="{{resImgFormat}}"
               result-image-quality="resImgQuality"
               result-image-size="resImgSize"
@@ -114,6 +118,7 @@
         $scope.resImgFormat='image/png';
         $scope.resImgQuality=1;
         $scope.selMinSize=10;
+        $scope.selInitialSize=100;
         $scope.resImgSize=200;
         //$scope.aspectRatio=1.2;
         $scope.onChange=function($dataURI) {

@@ -146,7 +146,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     {
       size = {w: size, h: size};
     }
-
     return {x: size.x || this._minSize.x,
       y: size.y || this._minSize.y,
       w: size.w || this._minSize.w,

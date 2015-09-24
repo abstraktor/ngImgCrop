@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, September 24th, 2015, 10:46:09 AM
+ * Generated at Thursday, September 24th, 2015, 11:42:17 AM
  */
 (function() {
 'use strict';
@@ -1013,7 +1013,6 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     {
       size = {w: size, h: size};
     }
-
     return {x: size.x || this._minSize.x,
       y: size.y || this._minSize.y,
       w: size.w || this._minSize.w,
@@ -1983,6 +1982,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Result Image size
     var resImgSize={w: 200, h: 200};
 
+    var initialSize = {x: 0, y: 0, w:80, h:80};
     /* PRIVATE FUNCTIONS */
 
     // Draw Scene
@@ -2039,9 +2039,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         if ((areaType === 'circle') || (areaType === 'square')) {
 
         }
-
-        theArea.setSize({ w: Math.min(200, cw / 2),
-          h: Math.min(200, ch / 2)});
+        theArea.setSize({ w: initialSize.w,
+          h: initialSize.h});
         //TODO: set top left corner point
         theArea.setCenterPoint({x: ctx.canvas.width/2, y: ctx.canvas.height/2});
 
@@ -2228,6 +2227,24 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       }
     };
 
+    this.setInitialSize = function(newInitalSize) {
+      if(angular.isUndefined(newInitalSize))
+      {
+        return;
+      }
+      if(angular.isNumber(newInitalSize))
+      {
+        newInitalSize = {w:newInitalSize, h: newInitalSize};
+      }
+      newInitalSize={w: parseInt(newInitalSize.w,10),
+        h: parseInt(newInitalSize.h,10)};
+      if(!isNaN(newInitalSize.w) && !isNaN(newInitalSize.h)) {
+        initialSize = newInitalSize;
+        // reinitialize area type
+        this.resetCropHost();
+      }
+    }
+
     this.getResultImageSize=function() {
       if (resImgSize == "selection")
       {
@@ -2373,6 +2390,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       areaCoords: '=',
       areaType: '@',
       areaMinSize: '=',
+      areaInitialSize: '=',
       resultImageSize: '=',
 
       onChange: '&',
@@ -2460,7 +2478,11 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         updateResultImage(scope);
       });
       scope.$watch('areaMinSize',function(){
-        cropHost.setAreaMinSize(scope.areaMinSize);
+        cropHost.setAreaMinSize(+scope.areaMinSize);
+        updateResultImage(scope);
+      });
+      scope.$watch('areaInitialSize',function(){
+        cropHost.setInitialSize(+scope.areaInitialSize);
         updateResultImage(scope);
       });
       scope.$watch('resultImageSize',function(){

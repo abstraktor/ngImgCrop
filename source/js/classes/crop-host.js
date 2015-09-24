@@ -36,6 +36,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
     // Result Image size
     var resImgSize={w: 200, h: 200};
 
+    var initialSize = {x: 0, y: 0, w:80, h:80};
     /* PRIVATE FUNCTIONS */
 
     // Draw Scene
@@ -92,9 +93,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         if ((areaType === 'circle') || (areaType === 'square')) {
 
         }
-
-        theArea.setSize({ w: Math.min(200, cw / 2),
-          h: Math.min(200, ch / 2)});
+        theArea.setSize({ w: initialSize.w,
+          h: initialSize.h});
         //TODO: set top left corner point
         theArea.setCenterPoint({x: ctx.canvas.width/2, y: ctx.canvas.height/2});
 
@@ -280,6 +280,24 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         drawScene();
       }
     };
+
+    this.setInitialSize = function(newInitalSize) {
+      if(angular.isUndefined(newInitalSize))
+      {
+        return;
+      }
+      if(angular.isNumber(newInitalSize))
+      {
+        newInitalSize = {w:newInitalSize, h: newInitalSize};
+      }
+      newInitalSize={w: parseInt(newInitalSize.w,10),
+        h: parseInt(newInitalSize.h,10)};
+      if(!isNaN(newInitalSize.w) && !isNaN(newInitalSize.h)) {
+        initialSize = newInitalSize;
+        // reinitialize area type
+        this.resetCropHost();
+      }
+    }
 
     this.getResultImageSize=function() {
       if (resImgSize == "selection")
