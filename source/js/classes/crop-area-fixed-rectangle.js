@@ -6,7 +6,7 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
 
     this._resizeCtrlBaseRadius = 10;
     this._resizeCtrlNormalRatio = 0.75;
-    this._resizeCtrlHoverRatio = 0;
+    this._resizeCtrlHoverRatio = 1;
     this._iconMoveNormalRatio = 0.9;
     this._iconMoveHoverRatio = 1.2;
 
@@ -149,13 +149,17 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
     // draw move icon
     this._cropCanvas.drawIconMove([center.x, center.y], this._areaIsHover?this._iconMoveHoverRatio:this._iconMoveNormalRatio);
 
-    // // draw resize thumbs
-    // var resizeIconsCenterCoords=this._calcRectangleCorners();
-    // for(var i=0,len=resizeIconsCenterCoords.length;i<len;i++) {
-    //   var resizeIconCenterCoords=resizeIconsCenterCoords[i];
-    //   this._cropCanvas.drawIconResizeCircle(resizeIconCenterCoords, this._resizeCtrlBaseRadius, this._resizeCtrlIsHover===i?this._resizeCtrlHoverRatio:this._resizeCtrlNormalRatio);
-    // }
+    // draw resize thumbs
+    var resizeIconsCenterCoords=this._calcRectangleCorners();
+    for(var i=0,len=resizeIconsCenterCoords.length;i<len;i++) {
+      var resizeIconCenterCoords=resizeIconsCenterCoords[i];
+      this._cropCanvas.drawIconResizeCircle(resizeIconCenterCoords, this._resizeCtrlBaseRadius, this._resizeCtrlIsHover===i?this._resizeCtrlHoverRatio:this._resizeCtrlNormalRatio);
+    }
   };
+
+  function dist(p1x, p1y, p2x, p2y){
+    return Math.sqrt(Math.pow(p2x - p1x, 2) + Math.pow(p2y - p1y, 2))
+  }
 
   CropAreaFixedRectangle.prototype.processMouseMove=function(mouseCurX, mouseCurY) {
     var cursor='default';
@@ -174,21 +178,31 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
     } else if (this._resizeCtrlIsDragging>-1) {
       var s = this.getSize();
       var se = this.getSouthEastBound();
+      var oldDia = dist(s.x, s.y, se.x, se.y);
+      var newDia, scale;
       switch(this._resizeCtrlIsDragging) {
         case 0: // Top Left
-          this.setSizeByCorners({x: mouseCurX, y: mouseCurY}, {x: se.x, y: se.y});
+          newDia = dist(mouseCurX, mouseCurY, se.x, se.y);
+          scale = newDia / oldDia;
+          this.setSizeByCorners({x: se.x - (s.w*scale), y: se.y - (s.h*scale)}, {x: se.x, y: se.y});
           cursor = 'nwse-resize';
           break;
         case 1: // Top Right
-          this.setSizeByCorners({x: s.x, y: mouseCurY}, {x: mouseCurX, y: se.y});
+          newDia = dist(s.x, s.y+s.h, mouseCurX, mouseCurY);
+          scale = newDia / oldDia;
+          this.setSizeByCorners({x: s.x, y: se.y - (s.h*scale)}, {x: s.x + (s.w*scale), y: se.y});
           cursor = 'nesw-resize';
           break;
         case 2: // Bottom Left
-          this.setSizeByCorners({x: mouseCurX, y: s.y}, {x: se.x, y: mouseCurY});
+          newDia = dist(s.x + s.w, s.y, mouseCurX, mouseCurY);
+          scale = newDia / oldDia;
+          this.setSizeByCorners({x: se.x - (s.w*scale), y: s.y}, {x: se.x, y: s.y + (s.h*scale)});
           cursor = 'nesw-resize';
           break;
         case 3: // Bottom Right
-          this.setSizeByCorners({x: s.x, y: s.y}, {x: mouseCurX, y: mouseCurY});
+          newDia = dist(s.x, s.y, mouseCurX, mouseCurY);
+          scale = newDia / oldDia;
+          this.setSizeByCorners({x: s.x, y: s.y}, {x: s.x + (s.w*scale), y: s.y + (s.h*scale)});
           cursor = 'nwse-resize';
           break;
       }
@@ -230,14 +244,25 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
 
   CropAreaFixedRectangle.prototype.processMouseDown=function(mouseDownX, mouseDownY) {
     var isWithinResizeCtrl=this._isCoordWithinResizeCtrl([mouseDownX,mouseDownY]);
-    this._areaIsDragging = true;
-    this._areaIsHover = true;
-    this._resizeCtrlIsDragging = -1;
-    this._resizeCtrlIsHover = -1;
-    var center = this.getCenterPoint();
-    this._posDragStartX = mouseDownX - center.x;
-    this._posDragStartY = mouseDownY - center.y;
-    this._events.trigger('area-move-start');
+    if (isWithinResizeCtrl>-1) {
+      this._areaIsDragging = false;
+      this._areaIsHover = false;
+      this._resizeCtrlIsDragging = isWithinResizeCtrl;
+      this._resizeCtrlIsHover = isWithinResizeCtrl;
+      this._posResizeStartX=mouseDownX;
+      this._posResizeStartY=mouseDownY;
+      this._posResizeStartSize = this._size;
+      this._events.trigger('area-resize-start');
+    } else {
+      this._areaIsDragging = true;
+      this._areaIsHover = true;
+      this._resizeCtrlIsDragging = -1;
+      this._resizeCtrlIsHover = -1;
+      var center = this.getCenterPoint();
+      this._posDragStartX = mouseDownX - center.x;
+      this._posDragStartY = mouseDownY - center.y;
+      this._events.trigger('area-move-start');
+    }
   };
 
   CropAreaFixedRectangle.prototype.processMouseUp=function(/*mouseUpX, mouseUpY*/) {
