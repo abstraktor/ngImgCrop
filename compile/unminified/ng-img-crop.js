@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, September 24th, 2015, 8:58:46 AM
+ * Generated at Thursday, September 24th, 2015, 9:31:39 AM
  */
 (function() {
 'use strict';
@@ -1125,8 +1125,8 @@ crop.factory('cropCanvas', [function() {
     this.drawCropArea=function(image, centerCoords, size, fnDrawClipPath) {
       var xRatio=image.width/ctx.canvas.width,
           yRatio=image.height/ctx.canvas.height,
-          xLeft=centerCoords[0]-size/2,
-          yTop=centerCoords[1]-size/2;
+          xLeft=size.x,
+          yTop=size.y;
 
       ctx.save();
       ctx.strokeStyle = colors.areaOutline;
@@ -1137,8 +1137,8 @@ crop.factory('cropCanvas', [function() {
       ctx.clip();
 
       // draw part of original image
-      if (size > 0) {
-          ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, size*xRatio, size*yRatio, xLeft, yTop, size, size);
+      if (size.w > 0 && size.h > 0) {
+          ctx.drawImage(image, xLeft*xRatio, yTop*yRatio, size.w*xRatio, size.h*yRatio, xLeft, yTop, size.w, size.h);
       }
 
       ctx.beginPath();
