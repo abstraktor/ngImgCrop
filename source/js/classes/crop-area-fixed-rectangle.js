@@ -230,25 +230,14 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
 
   CropAreaFixedRectangle.prototype.processMouseDown=function(mouseDownX, mouseDownY) {
     var isWithinResizeCtrl=this._isCoordWithinResizeCtrl([mouseDownX,mouseDownY]);
-    if (isWithinResizeCtrl>-1) {
-      this._areaIsDragging = false;
-      this._areaIsHover = false;
-      this._resizeCtrlIsDragging = isWithinResizeCtrl;
-      this._resizeCtrlIsHover = isWithinResizeCtrl;
-      this._posResizeStartX=mouseDownX;
-      this._posResizeStartY=mouseDownY;
-      this._posResizeStartSize = this._size;
-      this._events.trigger('area-resize-start');
-    } else if (this._isCoordWithinArea([mouseDownX,mouseDownY])) {
-      this._areaIsDragging = true;
-      this._areaIsHover = true;
-      this._resizeCtrlIsDragging = -1;
-      this._resizeCtrlIsHover = -1;
-      var center = this.getCenterPoint();
-      this._posDragStartX = mouseDownX - center.x;
-      this._posDragStartY = mouseDownY - center.y;
-      this._events.trigger('area-move-start');
-    }
+    this._areaIsDragging = true;
+    this._areaIsHover = true;
+    this._resizeCtrlIsDragging = -1;
+    this._resizeCtrlIsHover = -1;
+    var center = this.getCenterPoint();
+    this._posDragStartX = mouseDownX - center.x;
+    this._posDragStartY = mouseDownY - center.y;
+    this._events.trigger('area-move-start');
   };
 
   CropAreaFixedRectangle.prototype.processMouseUp=function(/*mouseUpX, mouseUpY*/) {

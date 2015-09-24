@@ -67,8 +67,8 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   };
 
   CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,size){
-    var hSize=size/2;
-    ctx.rect(centerCoords[0]-hSize,centerCoords[1]-hSize,size,size);
+    var hSize=size.h/2;
+    ctx.rect(centerCoords.x-hSize,centerCoords.y-hSize,size.w,size.h);
   };
 
   CropAreaSquare.prototype.draw=function() {

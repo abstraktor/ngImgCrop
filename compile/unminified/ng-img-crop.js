@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, September 24th, 2015, 9:31:39 AM
+ * Generated at Thursday, September 24th, 2015, 9:32:33 AM
  */
 (function() {
 'use strict';
@@ -393,25 +393,14 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
 
   CropAreaFixedRectangle.prototype.processMouseDown=function(mouseDownX, mouseDownY) {
     var isWithinResizeCtrl=this._isCoordWithinResizeCtrl([mouseDownX,mouseDownY]);
-    if (isWithinResizeCtrl>-1) {
-      this._areaIsDragging = false;
-      this._areaIsHover = false;
-      this._resizeCtrlIsDragging = isWithinResizeCtrl;
-      this._resizeCtrlIsHover = isWithinResizeCtrl;
-      this._posResizeStartX=mouseDownX;
-      this._posResizeStartY=mouseDownY;
-      this._posResizeStartSize = this._size;
-      this._events.trigger('area-resize-start');
-    } else if (this._isCoordWithinArea([mouseDownX,mouseDownY])) {
-      this._areaIsDragging = true;
-      this._areaIsHover = true;
-      this._resizeCtrlIsDragging = -1;
-      this._resizeCtrlIsHover = -1;
-      var center = this.getCenterPoint();
-      this._posDragStartX = mouseDownX - center.x;
-      this._posDragStartY = mouseDownY - center.y;
-      this._events.trigger('area-move-start');
-    }
+    this._areaIsDragging = true;
+    this._areaIsHover = true;
+    this._resizeCtrlIsDragging = -1;
+    this._resizeCtrlIsHover = -1;
+    var center = this.getCenterPoint();
+    this._posDragStartX = mouseDownX - center.x;
+    this._posDragStartY = mouseDownY - center.y;
+    this._events.trigger('area-move-start');
   };
 
   CropAreaFixedRectangle.prototype.processMouseUp=function(/*mouseUpX, mouseUpY*/) {
@@ -707,8 +696,8 @@ crop.factory('cropAreaSquare', ['cropArea', function(CropArea) {
   };
 
   CropAreaSquare.prototype._drawArea=function(ctx,centerCoords,size){
-    var hSize=size/2;
-    ctx.rect(centerCoords[0]-hSize,centerCoords[1]-hSize,size,size);
+    var hSize=size.h/2;
+    ctx.rect(centerCoords.x-hSize,centerCoords.y-hSize,size.w,size.h);
   };
 
   CropAreaSquare.prototype.draw=function() {
