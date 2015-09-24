@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, September 24th, 2015, 12:49:01 PM
+ * Generated at Thursday, September 24th, 2015, 12:56:27 PM
  */
 (function() {
 'use strict';
@@ -2538,11 +2538,11 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
         updateResultImage(scope);
       });
       scope.$watch('areaMinSize',function(){
-        cropHost.setAreaMinSize(+scope.areaMinSize);
+        cropHost.setAreaMinSize(scope.areaMinSize);
         updateResultImage(scope);
       });
       scope.$watch('areaInitialSize',function(){
-        cropHost.setInitialSize(+scope.areaInitialSize);
+        cropHost.setInitialSize(scope.areaInitialSize);
         updateResultImage(scope);
       });
       scope.$watch('minRuler',function(){
