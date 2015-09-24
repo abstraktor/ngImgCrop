@@ -273,6 +273,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       {
         return;
       }
+      if(angular.isNumber(size))
+      {
+        size = {w:size, h: size};
+      }
       size={w: parseInt(size.w,10),
         h: parseInt(size.h,10)};
       if(!isNaN(size.w) && !isNaN(size.h)) {
@@ -295,8 +299,16 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       if(!isNaN(newInitalSize.w) && !isNaN(newInitalSize.h)) {
         initialSize = newInitalSize;
         // reinitialize area type
-        this.resetCropHost();
+        resetCropHost();
       }
+    }
+
+    this.setMinRuler=function(unitSize){
+      if(angular.isUndefined(unitSize) || unitSize == 0 || isNaN(unitSize))
+        return;
+
+      theArea.setMinRuler(unitSize);
+      resetCropHost();
     }
 
     this.getResultImageSize=function() {
@@ -346,7 +358,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       var curSize=theArea.getSize(),
           curMinSize=theArea.getMinSize(),
           curX= center.x,
-          curY= center.y;
+          curY= center.y,
+          minRuler = theArea.getMinRuler();
 
       var AreaClass=CropAreaCircle;
       if(type==='square') {
@@ -361,6 +374,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
       theArea.setSize(curSize);
+      theArea.setMinRuler(minRuler);
 
       //TODO: use top left point
       theArea.setCenterPoint({x: curX, y: curY});

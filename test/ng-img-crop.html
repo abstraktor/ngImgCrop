@@ -54,6 +54,9 @@
     <label>Area Min Size (Size = Width = Height): <input type="text" ng-model="selMinSize" /></label>
   </div>
   <div>
+    <label>Ruler unit size when minimal: <input type="text" ng-model="selMinRuler" /></label>
+  </div>
+  <div>
     <label>Area Initial Size (Size = Width = Height): <input type="text" ng-model="selInitialSize" /></label>
   </div>
   <div>
@@ -89,6 +92,7 @@
               area-type="{{type}}"
               area-min-size="selMinSize"
               area-initial-size="selInitialSize"
+              min-ruler="selMinRuler"
               result-image-format="{{resImgFormat}}"
               result-image-quality="resImgQuality"
               result-image-size="resImgSize"
@@ -117,8 +121,9 @@
         $scope.resImageDataURI='';
         $scope.resImgFormat='image/png';
         $scope.resImgQuality=1;
-        $scope.selMinSize=10;
-        $scope.selInitialSize=100;
+        $scope.selMinSize=9;
+        $scope.selMinRuler=3;
+        $scope.selInitialSize=90;
         $scope.resImgSize=200;
         //$scope.aspectRatio=1.2;
         $scope.onChange=function($dataURI) {

@@ -52,6 +52,35 @@ crop.factory('cropCanvas', [function() {
         ctx.restore();
     };
 
+    this.drawHRuler= function(p1x, p1y, p2x, p2y){
+      ctx.save();
+      ctx.fillStyle = c1;
+      var w = p2y - p1y;
+      var x = p1x;
+      var c1 = '#ffffff', c2 = '#000000';
+
+      for(;x<p2x-w; x+=w){
+        ctx.fillRect(x, p1y, w, w);
+        ctx.fillStyle = ctx.fillStyle==c1 ? c2 : c1;
+      }
+      ctx.fillRect(x, p1y, p2x-x, w)
+      ctx.restore();
+    }
+
+    this.drawVRuler= function(p1x, p1y, p2x, p2y){
+      ctx.save();
+      ctx.fillStyle = c1;
+      var h = p2x - p1x;
+      var y = p1y;
+      var c1 = '#ffffff', c2 = '#000000';
+
+      for(;y<p2y-h; y+=h){
+        ctx.fillRect(p1x, y, h, h);
+        ctx.fillStyle = ctx.fillStyle==c1 ? c2 : c1;
+      }
+      ctx.fillRect(p1x, y, h, p2y-y)
+      ctx.restore();
+    }
 
     /* Icons */
 

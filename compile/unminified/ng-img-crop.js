@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, September 24th, 2015, 11:42:17 AM
+ * Generated at Thursday, September 24th, 2015, 12:49:01 PM
  */
 (function() {
 'use strict';
@@ -306,6 +306,12 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
   };
 
   CropAreaFixedRectangle.prototype.draw=function() {
+    // draw ruler
+    var s = this.getSize();
+    var w = (s.w / this.getMinSize().w) * this.getMinRuler();
+    this._cropCanvas.drawHRuler(s.x, s.y - w, s.x + s.w, s.y);
+    this._cropCanvas.drawVRuler(s.x - w, s.y, s.x, s.y + s.h);
+
     CropArea.prototype.draw.apply(this, arguments);
 
     var center=this.getCenterPoint();
@@ -878,6 +884,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
     this._image=new Image();
     this._size = {x: 0, y: 0, w:200, h:200};
+    this._minRuler = 10;
   };
 
   /* GETTERS/SETTERS */
@@ -931,6 +938,14 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._minSize = this._processSize(size);
     this.setSize(this._minSize);
   };
+
+  CropArea.prototype.setMinRuler = function(sizeOfOneUnit){
+    this._minRuler = sizeOfOneUnit;
+  }
+
+  CropArea.prototype.getMinRuler = function(){
+    return this._minRuler || 10;
+  }
 
   // return a type string
   CropArea.prototype.getType = function() {
@@ -1088,6 +1103,36 @@ crop.factory('cropCanvas', [function() {
         ctx.closePath();
         ctx.restore();
     };
+
+    this.drawHRuler= function(p1x, p1y, p2x, p2y){
+      ctx.save();
+      ctx.fillStyle = c1;
+      var w = p2y - p1y;
+      var x = p1x;
+      var c1 = '#ffffff', c2 = '#000000';
+
+      for(;x<p2x-w; x+=w){
+        ctx.fillRect(x, p1y, w, w);
+        ctx.fillStyle = ctx.fillStyle==c1 ? c2 : c1;
+      }
+      ctx.fillRect(x, p1y, p2x-x, w)
+      ctx.restore();
+    }
+
+    this.drawVRuler= function(p1x, p1y, p2x, p2y){
+      ctx.save();
+      ctx.fillStyle = c1;
+      var h = p2x - p1x;
+      var y = p1y;
+      var c1 = '#ffffff', c2 = '#000000';
+
+      for(;y<p2y-h; y+=h){
+        ctx.fillRect(p1x, y, h, h);
+        ctx.fillStyle = ctx.fillStyle==c1 ? c2 : c1;
+      }
+      ctx.fillRect(p1x, y, h, p2y-y)
+      ctx.restore();
+    }
 
     /* Icons */
 
@@ -2219,6 +2264,10 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       {
         return;
       }
+      if(angular.isNumber(size))
+      {
+        size = {w:size, h: size};
+      }
       size={w: parseInt(size.w,10),
         h: parseInt(size.h,10)};
       if(!isNaN(size.w) && !isNaN(size.h)) {
@@ -2241,8 +2290,16 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       if(!isNaN(newInitalSize.w) && !isNaN(newInitalSize.h)) {
         initialSize = newInitalSize;
         // reinitialize area type
-        this.resetCropHost();
+        resetCropHost();
       }
+    }
+
+    this.setMinRuler=function(unitSize){
+      if(angular.isUndefined(unitSize) || unitSize == 0 || isNaN(unitSize))
+        return;
+
+      theArea.setMinRuler(unitSize);
+      resetCropHost();
     }
 
     this.getResultImageSize=function() {
@@ -2292,7 +2349,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       var curSize=theArea.getSize(),
           curMinSize=theArea.getMinSize(),
           curX= center.x,
-          curY= center.y;
+          curY= center.y,
+          minRuler = theArea.getMinRuler();
 
       var AreaClass=CropAreaCircle;
       if(type==='square') {
@@ -2307,6 +2365,7 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
       theArea.setSize(curSize);
+      theArea.setMinRuler(minRuler);
 
       //TODO: use top left point
       theArea.setCenterPoint({x: curX, y: curY});
@@ -2390,6 +2449,7 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       areaCoords: '=',
       areaType: '@',
       areaMinSize: '=',
+      minRuler: '=',
       areaInitialSize: '=',
       resultImageSize: '=',
 
@@ -2483,6 +2543,10 @@ crop.directive('imgCrop', ['$timeout', 'cropHost', 'cropPubSub', function($timeo
       });
       scope.$watch('areaInitialSize',function(){
         cropHost.setInitialSize(+scope.areaInitialSize);
+        updateResultImage(scope);
+      });
+      scope.$watch('minRuler',function(){
+        cropHost.setMinRuler(+scope.minRuler);
         updateResultImage(scope);
       });
       scope.$watch('resultImageSize',function(){

@@ -143,6 +143,12 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
   };
 
   CropAreaFixedRectangle.prototype.draw=function() {
+    // draw ruler
+    var s = this.getSize();
+    var w = (s.w / this.getMinSize().w) * this.getMinRuler();
+    this._cropCanvas.drawHRuler(s.x, s.y - w, s.x + s.w, s.y);
+    this._cropCanvas.drawVRuler(s.x - w, s.y, s.x, s.y + s.h);
+
     CropArea.prototype.draw.apply(this, arguments);
 
     var center=this.getCenterPoint();

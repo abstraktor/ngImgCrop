@@ -11,6 +11,7 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
 
     this._image=new Image();
     this._size = {x: 0, y: 0, w:200, h:200};
+    this._minRuler = 10;
   };
 
   /* GETTERS/SETTERS */
@@ -64,6 +65,14 @@ crop.factory('cropArea', ['cropCanvas', function(CropCanvas) {
     this._minSize = this._processSize(size);
     this.setSize(this._minSize);
   };
+
+  CropArea.prototype.setMinRuler = function(sizeOfOneUnit){
+    this._minRuler = sizeOfOneUnit;
+  }
+
+  CropArea.prototype.getMinRuler = function(){
+    return this._minRuler || 10;
+  }
 
   // return a type string
   CropArea.prototype.getType = function() {
