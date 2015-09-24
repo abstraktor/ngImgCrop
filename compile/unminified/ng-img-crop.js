@@ -5,7 +5,7 @@
  * Copyright (c) 2015 undefined
  * License: MIT
  *
- * Generated at Thursday, September 24th, 2015, 9:32:33 AM
+ * Generated at Thursday, September 24th, 2015, 9:37:36 AM
  */
 (function() {
 'use strict';
@@ -2027,13 +2027,25 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       drawScene();
     };
 
+    /**
+     * Returns event.changedTouches directly if event is a TouchEvent.
+     * If event is a jQuery event, return changedTouches of event.originalEvent
+     */
+    var getChangedTouches=function(event){
+      if(angular.isDefined(event.changedTouches)){
+        return event.changedTouches;
+      }else{
+        return event.originalEvent.changedTouches;
+      }
+    };
+
     var onMouseMove=function(e) {
       if(image!==null) {
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchmove') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
@@ -2050,8 +2062,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchstart') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
@@ -2066,8 +2078,8 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
         var offset=getElementOffset(ctx.canvas),
             pageX, pageY;
         if(e.type === 'touchend') {
-          pageX=e.changedTouches[0].pageX;
-          pageY=e.changedTouches[0].pageY;
+          pageX=getChangedTouches(e)[0].pageX;
+          pageY=getChangedTouches(e)[0].pageY;
         } else {
           pageX=e.pageX;
           pageY=e.pageY;
