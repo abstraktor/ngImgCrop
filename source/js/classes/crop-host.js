@@ -1,4 +1,4 @@
-crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'cropAreaRectangle', function($document, CropAreaCircle, CropAreaSquare, CropAreaRectangle) {
+crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'cropAreaRectangle', 'cropAreaFixedRectangle', function($document, CropAreaCircle, CropAreaSquare, CropAreaRectangle, CropAreaFixedRectangle) {
   /* STATIC FUNCTIONS */
 
   // Get Element's Offset
@@ -324,6 +324,9 @@ crop.factory('cropHost', ['$document', 'cropAreaCircle', 'cropAreaSquare', 'crop
       } else if (type==='rectangle')
       {
         AreaClass=CropAreaRectangle;
+      } else if (type==='fixed-rectangle')
+      {
+        AreaClass=CropAreaFixedRectangle;
       }
       theArea = new AreaClass(ctx, events);
       theArea.setMinSize(curMinSize);
