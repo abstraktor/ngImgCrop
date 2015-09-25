@@ -146,8 +146,8 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
     // draw ruler
     var s = this.getSize();
     var w = (s.w / this.getMinSize().w) * this.getMinRuler();
-    this._cropCanvas.drawHRuler(s.x, s.y - w, s.x + s.w, s.y);
-    this._cropCanvas.drawVRuler(s.x - w, s.y, s.x, s.y + s.h);
+    this._cropCanvas.drawHRuler(s.x, s.y, s.x + s.w, s.y, w);
+    this._cropCanvas.drawVRuler(s.x, s.y, s.x, s.y + s.h, w);
 
     this._cropCanvas.drawCropArea(this._image,this.getCenterPoint(),this._size,this._drawArea, 0);
 

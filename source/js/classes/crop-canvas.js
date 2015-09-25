@@ -52,33 +52,95 @@ crop.factory('cropCanvas', [function() {
         ctx.restore();
     };
 
-    this.drawHRuler= function(p1x, p1y, p2x, p2y){
+    this.drawHRuler= function(p1x, p1y, p2x, p2y, cmLength){
       ctx.save();
-      ctx.fillStyle = c1;
-      var w = p2y - p1y;
+      ctx.beginPath();
+      ctx.strokeStyle = '#eee';
+      ctx.lineWidth = 1;
+      var mmLength = cmLength*0.1;
       var x = p1x;
-      var c1 = '#ffffff', c2 = '#000000';
-
-      for(;x<p2x-w; x+=w){
-        ctx.fillRect(x, p1y, w, w);
-        ctx.fillStyle = ctx.fillStyle==c1 ? c2 : c1;
+      for(;x<=p2x+0.09; x+=mmLength){
+        ctx.moveTo(x, p1y);
+        ctx.lineTo(x, p1y-7);
       }
-      ctx.fillRect(x, p1y, p2x-x, w)
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
+
+      // ctx.save();
+      // ctx.beginPath();
+      // ctx.strokeStyle = '#eee';
+      // ctx.lineWidth = 2;
+      // var x = p1x;
+      // for(;x<=p2x+0.09; x+=5*mmLength){
+      //   ctx.moveTo(x, p1y);
+      //   ctx.lineTo(x, p1y-15);
+      // }
+      // ctx.stroke();
+      // ctx.closePath();
+      // ctx.restore();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = 'white';
+      ctx.font = "10px";
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.lineWidth = 2;
+      var x = p1x;
+      for(;x<=p2x+0.1; x+=cmLength){
+        ctx.moveTo(x, p1y);
+        ctx.lineTo(x, p1y-15);
+        ctx.fillText(Math.round((x-p1x) / cmLength), x, p1y - 20);
+      }
+      ctx.stroke();
+      ctx.closePath();
       ctx.restore();
     }
 
-    this.drawVRuler= function(p1x, p1y, p2x, p2y){
+    this.drawVRuler= function(p1x, p1y, p2x, p2y, cmLength){
       ctx.save();
-      ctx.fillStyle = c1;
-      var h = p2x - p1x;
+      ctx.beginPath();
+      ctx.strokeStyle = '#eee';
+      ctx.lineWidth = 1;
+      var mmLength = cmLength*0.1;
       var y = p1y;
-      var c1 = '#ffffff', c2 = '#000000';
-
-      for(;y<p2y-h; y+=h){
-        ctx.fillRect(p1x, y, h, h);
-        ctx.fillStyle = ctx.fillStyle==c1 ? c2 : c1;
+      for(;y<=p2y+0.09; y+=mmLength){
+        ctx.moveTo(p1x, y);
+        ctx.lineTo(p1x-7, y);
       }
-      ctx.fillRect(p1x, y, h, p2y-y)
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
+
+      // ctx.save();
+      // ctx.beginPath();
+      // ctx.strokeStyle = '#eee';
+      // ctx.lineWidth = 2;
+      // var x = p1x;
+      // for(;x<=p2x+0.09; x+=5*mmLength){
+      //   ctx.moveTo(x, p1y);
+      //   ctx.lineTo(x, p1y-15);
+      // }
+      // ctx.stroke();
+      // ctx.closePath();
+      // ctx.restore();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = 'white';
+      ctx.font = "10px";
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.lineWidth = 2;
+      var y = p1y;
+      for(;y<=p2y+0.1; y+=cmLength){
+        ctx.moveTo(p1x, y);
+        ctx.lineTo(p1x-15, y);
+        ctx.fillText(Math.round((y-p1y) / cmLength), p1x-20, y);
+      }
+      ctx.stroke();
+      ctx.closePath();
       ctx.restore();
     }
 
