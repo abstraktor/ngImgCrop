@@ -4,7 +4,7 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
   var CropAreaFixedRectangle = function() {
     CropArea.apply(this, arguments);
 
-    this._resizeCtrlBaseRadius = 10;
+    this._resizeCtrlBaseRadius = 30;
     this._resizeCtrlNormalRatio = 0.75;
     this._resizeCtrlHoverRatio = 1;
     this._iconMoveNormalRatio = 0.9;
@@ -149,7 +149,7 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
     this._cropCanvas.drawHRuler(s.x, s.y - w, s.x + s.w, s.y);
     this._cropCanvas.drawVRuler(s.x - w, s.y, s.x, s.y + s.h);
 
-    CropArea.prototype.draw.apply(this, arguments);
+    this._cropCanvas.drawCropArea(this._image,this.getCenterPoint(),this._size,this._drawArea, 0);
 
     var center=this.getCenterPoint();
     // draw move icon
@@ -159,7 +159,7 @@ crop.factory('cropAreaFixedRectangle', ['cropArea', function(CropArea) {
     var resizeIconsCenterCoords=this._calcRectangleCorners();
     for(var i=0,len=resizeIconsCenterCoords.length;i<len;i++) {
       var resizeIconCenterCoords=resizeIconsCenterCoords[i];
-      this._cropCanvas.drawIconResizeCircle(resizeIconCenterCoords, this._resizeCtrlBaseRadius, this._resizeCtrlIsHover===i?this._resizeCtrlHoverRatio:this._resizeCtrlNormalRatio);
+      this._cropCanvas.drawIconResizeMark(resizeIconCenterCoords, i, this._resizeCtrlBaseRadius, this._resizeCtrlIsHover===i?this._resizeCtrlHoverRatio:this._resizeCtrlNormalRatio);
     }
   };
 

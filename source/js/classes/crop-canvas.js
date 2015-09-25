@@ -91,6 +91,25 @@ crop.factory('cropCanvas', [function() {
       drawFilledPolygon(shapeArrowE, colors.moveIconFill, centerCoords, scale);
     };
 
+    /** orientationMap = ['northwest', 'northeast', 'southwest', 'southeast']*/
+    this.drawIconResizeMark=function(centerCoords, orientation, radius, scale) {
+      var scaledRadius=radius*scale;
+      ctx.save();
+      ctx.strokeStyle = colors.resizeCircleStroke;
+      ctx.lineWidth = 2;
+      ctx.fillStyle = colors.resizeCircleFill;
+      ctx.beginPath();
+      ctx.moveTo(centerCoords[0] + (orientation%2==0? 1:-1)*scaledRadius, centerCoords[1]);
+      ctx.lineTo(centerCoords[0], centerCoords[1]);
+      ctx.lineTo(centerCoords[0], centerCoords[1] + (orientation<2? 1:-1)*scaledRadius);
+
+      // ctx.fill();
+      ctx.lineWidth = 5*scale;
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
+    }
+
     this.drawIconResizeCircle=function(centerCoords, circleRadius, scale) {
       var scaledCircleRadius=circleRadius*scale;
       ctx.save();
@@ -128,19 +147,21 @@ crop.factory('cropCanvas', [function() {
 
     /* Crop Area */
 
-    this.drawCropArea=function(image, centerCoords, size, fnDrawClipPath) {
+    this.drawCropArea=function(image, centerCoords, size, fnDrawClipPath, lineWidth) {
       var xRatio=image.width/ctx.canvas.width,
           yRatio=image.height/ctx.canvas.height,
           xLeft=size.x,
           yTop=size.y;
 
       ctx.save();
-      ctx.strokeStyle = colors.areaOutline;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      fnDrawClipPath(ctx, centerCoords, size);
-      ctx.stroke();
-      ctx.clip();
+      ctx.lineWidth = (lineWidth===undefined)? 2 : lineWidth;
+      if(lineWidth !== 0){
+        ctx.strokeStyle = colors.areaOutline;
+        ctx.beginPath();
+        fnDrawClipPath(ctx, centerCoords, size);
+        ctx.stroke();
+        ctx.clip();
+      }
 
       // draw part of original image
       if (size.w > 0 && size.h > 0) {
